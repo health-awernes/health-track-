@@ -1,54 +1,72 @@
-<header>
+import streamlit as st
+import random
+from datetime import datetime
 
-<!--
-  <<< Author notes: Course header >>>
-  Include a 1280×640 image, course title in sentence case, and a concise description in emphasis.
-  In your repository settings: enable template repository, add your 1280×640 social image, auto delete head branches.
-  Add your open source license, GitHub uses MIT license.
--->
+st.set_page_config(page_title="Mental Health Chatbot", page_icon="🧠")
 
-# GitHub Pages
+st.title("🧠 Mental Health Check-In Chatbot")
+st.markdown("This chatbot checks in on your feelings, shares kind thoughts, and helps you track your mood. 💬")
 
-_Create a site or blog from your GitHub repositories with GitHub Pages._
+# Initialize session state
+if 'mood_log' not in st.session_state:
+    st.session_state.mood_log = []
 
-</header>
+# Emotional keywords and responses
+emotions = {
+    "sad": "I'm sorry you're feeling sad. Remember, it's okay to take time for yourself.",
+    "happy": "That's wonderful to hear! Keep enjoying the good moments.",
+    "angry": "Anger is a natural feeling. Try to breathe and take a little break.",
+    "tired": "Rest is important. Maybe take a short nap or relax with something you enjoy.",
+    "anxious": "Anxiety can be tough. Try to focus on your breathing and ground yourself.",
+    "lonely": "You’re not alone. Reaching out to someone you trust can help.",
+}
 
-<!--
-  <<< Author notes: Step 1 >>>
-  Choose 3-5 steps for your course.
-  The first step is always the hardest, so pick something easy!
-  Link to docs.github.com for further explanations.
-  Encourage users to open new tabs for steps!
--->
+# Positive quotes
+quotes = [
+    "You are stronger than you think.",
+    "This too shall pass.",
+    "Your feelings are valid.",
+    "You don't have to do everything today.",
+    "Small steps are still progress.",
+]
 
-## Step 1: Enable GitHub Pages
+# Daily tip
+daily_tips = [
+    "Take a deep breath and hold for 5 seconds before slowly exhaling.",
+    "Write down 3 things you’re grateful for today.",
+    "Drink a glass of water. Hydration helps your brain function better.",
+    "Go outside for 10 minutes and feel the sun or breeze.",
+    "Talk to someone you trust about how you're feeling.",
+]
 
-_Welcome to GitHub Pages and Jekyll :tada:!_
+st.markdown(f"🌞 **Daily Tip:** _{random.choice(daily_tips)}_")
 
-The first step is to enable GitHub Pages on this [repository](https://docs.github.com/en/get-started/quickstart/github-glossary#repository). When you enable GitHub Pages on a repository, GitHub takes the content that's on the main branch and publishes a website based on its contents.
+user_input = st.text_input("How are you feeling today?")
 
-### :keyboard: Activity: Enable GitHub Pages
+if user_input:
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    mood_entry = {"time": timestamp, "text": user_input}
+    st.session_state.mood_log.append(mood_entry)
 
-1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-1. Under your repository name, click **Settings**.
-1. Click **Pages** in the **Code and automation** section.
-1. Ensure "Deploy from a branch" is selected from the **Source** drop-down menu, and then select `main` from the **Branch** drop-down menu.
-1. Click the **Save** button.
-1. Wait about _one minute_ then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
-   > Turning on GitHub Pages creates a deployment of your repository. GitHub Actions may take up to a minute to respond while waiting for the deployment. Future steps will be about 20 seconds; this step is slower.
-   > **Note**: In the **Pages** of **Settings**, the **Visit site** button will appear at the top. Click the button to see your GitHub Pages site.
+    found = False
+    for emotion, response in emotions.items():
+        if emotion in user_input.lower():
+            st.write("🤖: " + response)
+            st.success(f"💡 Positive Thought: "{random.choice(quotes)}"")
+            found = True
+            break
 
-<footer>
+    if not found:
+        st.write("🤖: Thanks for sharing. Whatever you're feeling, it's okay. 🌿")
+        st.success(f"💡 Positive Thought: "{random.choice(quotes)}"")
 
-<!--
-  <<< Author notes: Footer >>>
-  Add a link to get support, GitHub status page, code of conduct, license link.
--->
+    st.subheader("📈 Mood Tracker")
+    for entry in reversed(st.session_state.mood_log):
+        st.write(f"{entry['time']} - _{entry['text']}_")
 
----
+    st.subheader("📝 Leave Feedback")
+    feedback = st.text_area("Any suggestions or feedback?")
+    if feedback:
+        st.success("Thank you for your feedback! 💬")
 
-Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
-
-&copy; 2023 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
-
-</footer>
+        
